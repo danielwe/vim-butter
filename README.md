@@ -52,16 +52,27 @@ argument at all (`Bdelete`, applies to current buffer). Analogous commands
 Finally, `vim-butter` defines the command `:Drop`, an improvement on the
 `:drop` command in the spirit of the commands above. It aims to be the sanest
 way to navigate straight to a file that may or may not already be open in some
-(possibly hidden) buffer. With `:Drop`, a special buffer (i.e., `buftype` other
-than `""`) will never be abandoned; the window will instead split in the same
-manner as when using `:drop` from buffer that is impossible to abandon
-(typically because it is modified and `&hidden` is disabled). Give it a try:
-call `:Drop $MYVIMRC` from a help buffer, preview window or similar.
+window already. Like `:drop`, `:Drop` will jump to the window in which the file
+is already open, or open it in the current window, which is split if the
+current buffer cannot be abandoned; however, `:Drop` adds extra precautions if
+the current buffer is special or if the current window is a preview window.
+In these cases, it will first move back to the previous window, and if the
+buffer is still special, the window will be split, as if `:drop` had been
+called on a buffer that cannot be abandoned. A special buffer is a buffer that
+has a `buftype` other than `""`, or is unlisted.
+
+Give it a try: call `:Drop $MYVIMRC` from a help buffer, preview window or
+similar.
+
+Note: full functionality of this command requires a vim that has the `:drop`
+command, i.e., one that was compiled with either the gui or clientserver
+options or has patch 8.0.1508. If this is unavailable, `:Drop` will not be able
+to move to a window where the file is already open.
 
 ### similar plugins
 
 Other plugins seem to focus on the buffer deletion part, while I tend to think
-of this as a nice collateral effect. The main goal of `vim-butter` is to
+of this as a nice collateral result. The main goal of `vim-butter` is to
 sanitize basic buffer browsing.
 
 * I drew inspiration from https://github.com/qpkorr/vim-bufkill.
