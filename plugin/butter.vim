@@ -67,21 +67,16 @@ function! <SID>Wraparound(index, length)
   return (a:index + a:length - 1) % a:length + 1
 endfunction
 
-function! <SID>BufRemove(cmd, bang, range, line1, line2, ...)
+function! <SID>BufRemove(cmd, bang, line1, line2, ...)
   if a:0 > 0
-    if a:range > 0
-      " Inconsistent arguments, give up
-      let buflist = []
-    else
-      let buflist = copy(a:000)
-    endif
-  elseif a:range == 2
-    let buflist = range(a:line1, a:line2)
-  else
+    let buflist = copy(a:000)
+  elseif a:line2 < a:line1
     let buflist = [a:line1]
+  else
+    let buflist = range(a:line1, a:line2)
   endif
-  call map(buflist, function('<SID>BufIndexMap'))
-  call filter(buflist, function('<SID>BufIndexFilter'))
+  call map(buflist, '<SID>BufIndexMap(v:key, v:val)')
+  call filter(buflist, '<SID>BufIndexFilter(v:key, v:val)')
   if len(buflist) == 0
     let verb = <SID>BufRemoveVerb(a:cmd)
     echohl ErrorMsg
@@ -177,10 +172,10 @@ command! -nargs=* -range=1 -bang BNext <count>Bprev<bang> <q-args>
 command! -nargs=* -range=1 -bang SBNext <count>SBprev<bang> <q-args>
 command! -nargs=* -complete=buffer -range -addr=buffers -bang Bdelete
       \ call <SID>BufRemove(
-      \ 'bdelete', '<bang>', <range>, <line1>, <line2>, <f-args>)
+      \ 'bdelete', '<bang>', <line1>, <line2>, <f-args>)
 command! -nargs=* -complete=buffer -range -addr=buffers -bang Bwipeout
       \ call <SID>BufRemove(
-      \ 'bwipeout', '<bang>', <range>, <line1>, <line2>, <f-args>)
+      \ 'bwipeout', '<bang>', <line1>, <line2>, <f-args>)
 command! -nargs=* -complete=buffer -range -addr=buffers -bang Bunload
       \ call <SID>BufRemove(
-      \ 'bunload', '<bang>', <range>, <line1>, <line2>, <f-args>)
+      \ 'bunload', '<bang>', <line1>, <line2>, <f-args>)
