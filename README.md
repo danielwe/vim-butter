@@ -11,8 +11,9 @@ improve on this predicament.
 `:[S]Bnext,:[S]Bprev,:[S]BNext,:[S]Blast,:[S]Bfirst,:[S]Brewind`
 
 The plugin provides a new family of commands, `:Bnext` and friends, that mirror
-the standard ones but apply an additional heuristic to decide which buffer to
-open: _only ever open a buffer of the same kind as the current buffer_.
+the standard ones but apply two additional heuristic to decide what to do: _only
+ever open a buffer of the same kind as the current buffer_ and _don't touch the
+preview window_.
 Specifically:
 * If you're in a plain ordinary file buffer (i.e., `buftype` is `""` and buffer
   is listed), `:Bnext` will open the next equally vanilla buffer.
@@ -24,27 +25,35 @@ Specifically:
 * If you're in _any_ other kind of buffer, `:Bnext` will do _nothing at all_.
   Your buffer is considered unique, and another one of the same kind cannot
   exist.
+* If you're in a preview window, `:Bnext` will not do anything.
 Analogous commands `:Bprev` and `:BNext` for stepping backwards and
 `:Blast,:Bfirst,:Brewind` for stepping to the last and first buffers are also
 provided, as are splitting commands
 `:SBnext,:SBprev,:SBNext,:SBlast,:SBfirst,:SBrewind` that work according to the
-same heuristic. The `[S]Bnext,[S]Bprev,[S]BNext` take an optional count in the
-line number position (i.e., `:3Bnext`) specifying how far to move on the buffer
-list. Only buffers of the same kind as the current buffer count as steps.
+same heuristic for finding the desired buffer. However, the splitting commands
+work in the preview window, however.
+
+The `[S]Bnext,[S]Bprev,[S]BNext` take an optional count in the line number
+position (i.e., `:3Bnext`) specifying how far to move on the buffer list. Only
+buffers of the same kind as the current buffer count as steps.
 
 ### delete buffers
 `:Bdelete,:Bunload,:Bwipeout`
 
-The plugin also provides commands for deleting buffers using a similar
-heuristic: `:Bdelete N` will try to replace buffer `N` with the previous buffer
-of the same type (like `:Bprev`) in all windows where it is open, and only then
-call `:bdelete` on it. Thus, the window layout is maintained unless no other
-buffer of the same type is available. Just as for `:bdelete`, the buffer(s) to
-delete can be specified in a number of ways: a single buffer index in the line
-number position (`:3Bdelete`), a buffer index range (`3,5Bdelete`), one or more
+The plugin also provides commands for deleting buffers using similar heuristics:
+`:Bdelete N` will try to hide buffer `N` and replace it with the previous buffer
+(i.e., call `:Bprev`) in all windows where it is open, and only then call
+`:bdelete` on it. Thus, the window layout is maintained unless no other buffer
+of the same type is available. Just as for `:bdelete`, the buffer(s) to delete
+can be specified in a number of ways: a single buffer index in the line number
+position (`:3Bdelete`), a buffer index range (`3,5Bdelete`), one or more
 arguments containing buffer indices or filenames (`Bdelete 3 prose.txt`), or no
 argument at all (`Bdelete`, applies to current buffer). Analogous commands
 `Bunload` and `Bwipeout` are also provided.
+
+The preview window is not touched (a straightforward and desired consequence of
+using `:Bprev` for the buffer replacement). Hence, if the preview window is
+open with a buffer about to be removed, it will be closed.
 
 ### open or go to file
 `:Drop`

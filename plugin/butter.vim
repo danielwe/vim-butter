@@ -1,6 +1,8 @@
 " Navigate buffers smoothly
 function! <SID>BufGo(bang, bufindex, args)
-  execute a:bufindex . 'buffer' . a:bang a:args
+  if !&previewwindow
+    execute a:bufindex . 'buffer' . a:bang a:args
+  endif
 endfunction
 
 function! <SID>SplitBufGo(bang, bufindex, args)
