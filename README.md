@@ -23,6 +23,7 @@ Specifically:
 * If you're in _any_ other kind of buffer, `:Bnext` will do _nothing at all_. Your
   buffer is considered unique, and another one of the same kind cannot exist.
 * If you're in a preview window, `:Bnext` will not do anything.
+
 Analogous commands `:Bprev` and `:BNext` for stepping backwards and
 `:Blast,:Bfirst,:Brewind` for stepping to the last and first buffers are also provided,
 as are splitting commands `:SBnext,:SBprev,:SBNext,:SBlast,:SBfirst,:SBrewind` that work
