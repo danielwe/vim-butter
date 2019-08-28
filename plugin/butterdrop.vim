@@ -3,20 +3,20 @@
 " Note: :drop is not always available. Use a primitive fallback that avoids
 " displacing special buffers, but does not jump to a window where the file is
 " already open.
-function! <SID>BufSpecial(bufindex)
+function! s:BufSpecial(bufindex)
   let btype = getbufvar(a:bufindex, '&buftype')
   let blisted = getbufvar(a:bufindex, '&buflisted')
   return (btype !=# "" || !blisted)
 endfunction
 
 if has('patch-8.0.1508') || has('gui') || has('clientserver')
-  function! <SID>Drop(args)
+  function! s:Drop(args)
     let bufindex = bufnr('%')
-    if <SID>BufSpecial(bufindex) || &previewwindow
+    if s:BufSpecial(bufindex) || &previewwindow
       wincmd p
     endif
     let bufindex = bufnr('%')
-    let special = <SID>BufSpecial(bufindex)
+    let special = s:BufSpecial(bufindex)
     if special
       " Trick vim into refusing to abandon the buffer in focus
       let hid = getbufvar(bufindex, '&hidden')
@@ -35,13 +35,13 @@ if has('patch-8.0.1508') || has('gui') || has('clientserver')
     endif
   endfunction
 else
-  function! <SID>Drop(args)
+  function! s:Drop(args)
     let bufindex = bufnr('%')
-    if <SID>BufSpecial(bufindex) || &previewwindow
+    if s:BufSpecial(bufindex) || &previewwindow
       wincmd p
     endif
     let bufindex = bufnr('%')
-    let special = <SID>BufSpecial(bufindex)
+    let special = s:BufSpecial(bufindex)
     if special
       execute 'split' a:args
     else
@@ -50,4 +50,4 @@ else
   endfunction
 endif
 
-command! -nargs=+ -complete=file Drop call <SID>Drop(<q-args>)
+command! -nargs=+ -complete=file Drop call s:Drop(<q-args>)
